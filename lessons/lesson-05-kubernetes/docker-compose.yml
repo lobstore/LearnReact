@@ -1,0 +1,47 @@
+# Docker Compose для оркестрации всех сервисов
+# Запускает: proxy (nginx), frontend (React), backend (.NET WebAPI)
+
+services:
+  # ============================================
+  # PROXY - NGINX РЕВЕРС-ПРОКСИ
+  # ============================================
+  proxy:
+    build:
+      context: ./proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - dev
+
+  # ============================================
+  # FRONTEND - REACT ПРИЛОЖЕНИЕ
+  # ============================================
+  frontend:
+    build:
+      context: ./LearnReact.Frontend
+    container_name: learnreact-frontend
+    depends_on:
+      - backend
+    networks:
+      - dev
+    restart: unless-stopped
+
+  # ============================================
+  # BACKEND - .NET WEBAPI
+  # ============================================
+  backend:
+    build:
+      context: ./LearnReact.Api
+    container_name: learnreact-backend
+    networks:
+      - dev
+    restart: unless-stopped
+
+# ============================================
+# СЕТИ
+# ============================================
+networks:
+  dev:

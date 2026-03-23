@@ -1,0 +1,49 @@
+# Docker Compose для оркестрации всех сервисов
+# Запускает: nginx (фронтенд + прокси), .NET WebAPI (бэкенд)
+
+services:
+  # ============================================
+  # NGINX - ФРОНТЕНД + РЕВЕРС-ПРОКСИ
+  # ============================================
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      # Монтируем конфигурацию nginx из хоста
+      - './nginx.conf:/etc/nginx/nginx.conf'
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - dev
+
+
+  frontend:
+    build:
+      context: ./LearnReact.Frontend  # Путь к Dockerfile фронтенда
+    container_name: learnreact-frontend
+
+    depends_on:
+      # Ждём запуска backend перед стартом frontend
+      - backend
+    networks:
+      - dev
+    restart: unless-stopped
+
+  # ============================================
+  # .NET WEBAPI - БЭКЕНД
+  # ============================================
+  backend:
+    build:
+      context: ./LearnReact.Api  # Путь к Dockerfile бэкенда
+    container_name: learnreact-backend
+    networks:
+      - dev
+    restart: unless-stopped
+
+# ============================================
+# СЕТИ
+# ============================================
+networks:
+  dev:

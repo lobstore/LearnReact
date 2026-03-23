@@ -1,0 +1,75 @@
+# ============================================
+# INGRESS — Внешний доступ через HTTP/HTTPS (опционально)
+# ============================================
+# Ingress — это «умный» маршрутизатор для внешнего трафика.
+# В отличие от NodePort, он работает на уровне HTTP (может маршрутизировать по путям).
+#
+# Зачем нужен Ingress:
+# - Один IP-адрес для всех сервисов
+# - Маршрутизация по доменам и путям (example.com/api → backend)
+# - SSL/TLS termination (HTTPS)
+# - Аутентификация, rate limiting
+#
+# Важно:
+# - Для работы Ingress нужен Ingress Controller (nginx, traefik, etc.)
+# - В Minikube включить: minikube addons enable ingress
+#
+# Разница между Ingress и Service:
+# - Service L4 (TCP/UDP) — балансировка по портам
+# - Ingress L7 (HTTP/HTTPS) — балансировка по путям и доменам
+
+apiVersion: networking.k8s.io/v1   # API для сетевых ресурсов
+kind: Ingress                       # Тип ресурса — Ingress (HTTP-маршрутизатор)
+metadata:
+  name: learnreact-ingress          # Имя Ingress
+  namespace: learnreact
+spec:
+  # ----------------------------------------
+  # ingressClassName — Какой контроллер использовать
+  # ----------------------------------------
+  # nginx — самый популярный Ingress Controller
+  ingressClassName: nginx
+
+  # ----------------------------------------
+  # rules — Правила маршрутизации
+  # ----------------------------------------
+  rules:
+  - http:
+      paths:
+      # ----------------------------------------
+      # Путь 1: API → Backend
+      # ----------------------------------------
+      - path: /api                  # Все запросы к /api/*
+        pathType: Prefix            # Тип пути: префикс (совпадает /api, /api/todo, etc.)
+        backend:                    # Куда отправлять запросы
+          service:
+            name: backend           # Имя сервиса (backend-service.yaml)
+            port:
+              number: 5000          # Порт сервиса
+
+      # ----------------------------------------
+      # Путь 2: Корень → Frontend
+      # ----------------------------------------
+      - path: /                     # Все остальные запросы
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend          # Имя сервиса (frontend-service.yaml)
+            port:
+              number: 3000          # Порт сервиса
+
+# ============================================
+# КАК ПОЛЬЗОВАТЬСЯ:
+# ============================================
+# 1. Включить Ingress в Minikube:
+#    minikube addons enable ingress
+#
+# 2. Применить манифест:
+#    kubectl apply -f ingress.yaml
+#
+# 3. Получить IP:
+#    minikube ip
+#
+# 4. Открыть:
+#    http://<minikube-ip>/ → Frontend
+#    http://<minikube-ip>/api/todo → Backend

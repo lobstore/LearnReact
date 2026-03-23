@@ -1,0 +1,55 @@
+# ============================================
+# DEPLOYMENT — Контроллер для управления proxy-подом
+# ============================================
+# Deployment для nginx proxy, который маршрутизирует трафик:
+# - / → frontend:3000 (раздача статики React)
+# - /api/* → backend:5000 (проксирование API-запросов)
+#
+# Почему 1 реплика:
+# - Proxy не хранит состояние (stateless)
+# - Одна реплика достаточна для разработки
+# - Для продакшена можно увеличить до 2-3
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy               # Имя деплоямента
+  namespace: learnreact     # Пространство имён
+spec:
+  replicas: 1               # Одна реплика (для разработки достаточно)
+  selector:
+    matchLabels:
+      app: proxy            # Управлять подами с меткой app=proxy
+  template:
+    metadata:
+      labels:
+        app: proxy          # Метка должна совпадать с selector
+    spec:
+      containers:
+      - name: proxy         # Имя контейнера
+        image: learnreact-proxy:latest  # Docker-образ с кастомным nginx.conf
+        imagePullPolicy: Never  # Использовать локальный образ
+        ports:
+        - containerPort: 80     # nginx слушает стандартный HTTP-порт 80
+
+        # ----------------------------------------
+        # livenessProbe — Проверка «жив ли proxy»
+        # ----------------------------------------
+        # Если nginx не отвечает на корне — под перезапущен
+        livenessProbe:
+          httpGet:
+            path: /         # Проверяем корень (должен вернуть 200 или 301)
+            port: 80
+          initialDelaySeconds: 5   # Даём 5 секунд на запуск
+          periodSeconds: 10        # Проверяем каждые 10 секунд
+
+        # ----------------------------------------
+        # readinessProbe — Проверка готовности к трафику
+        # ----------------------------------------
+        # Если proxy не готов — не отправлять ему запросы
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 3   # Первая проверка через 3 секунды
+          periodSeconds: 5         # Проверка каждые 5 секунд

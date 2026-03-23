@@ -1,0 +1,54 @@
+# ============================================
+# DEPLOYMENT — Контроллер для управления подами фронтенда
+# ============================================
+# Deployment для React-приложения.
+# Запускает 2 реплики для надёжности и балансировки нагрузки.
+#
+# Важно:
+# - Фронтенд раздаёт статические файлы (HTML, CSS, JS)
+# - nginx внутри контейнера слушает порт 3000
+# - Пробы (probes) проверяют доступность корня приложения
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend            # Имя деплоямента
+  namespace: learnreact     # Пространство имён
+spec:
+  replicas: 2               # Количество подов (копий фронтенда)
+  selector:
+    matchLabels:
+      app: frontend         # Управлять подами с меткой app=frontend
+  template:
+    metadata:
+      labels:
+        app: frontend       # Метка должна совпадать с selector
+    spec:
+      containers:
+      - name: frontend      # Имя контейнера
+        image: learnreact-frontend:latest  # Docker-образ с React-приложением
+        imagePullPolicy: Never  # Использовать локальный образ (не скачивать)
+        ports:
+        - containerPort: 3000  # Порт, который слушает nginx внутри контейнера
+
+        # ----------------------------------------
+        # livenessProbe — Проверка «жив ли под»
+        # ----------------------------------------
+        # Если nginx не отвечает на корне — под перезапущен
+        livenessProbe:
+          httpGet:
+            path: /         # Проверяем корень сайта
+            port: 3000
+          initialDelaySeconds: 10  # Даём 10 секунд на запуск nginx
+          periodSeconds: 10        # Проверяем каждые 10 секунд
+
+        # ----------------------------------------
+        # readinessProbe — Проверка готовности к трафику
+        # ----------------------------------------
+        # Если под не готов — не отправлять ему запросы
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5   # Первая проверка через 5 секунд
+          periodSeconds: 5         # Проверка каждые 5 секунд

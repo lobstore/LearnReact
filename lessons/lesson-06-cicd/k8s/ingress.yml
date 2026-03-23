@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: learnreact-ingress
+  namespace: learnreact
+  annotations:
+    # NGINX Ingress Controller annotations
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    # Cert Manager annotations (if using HTTPS)
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  # TLS configuration (uncomment and configure for HTTPS)
+  # tls:
+  #   - hosts:
+  #       - your-domain.com
+  #     secretName: learnreact-tls-secret
+  rules:
+    - host: your-domain.com  # Replace with your actual domain
+      http:
+        paths:
+          # API routes go to backend
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: learnreact-backend-service
+                port:
+                  number: 5000
+          # All other routes go to frontend
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: learnreact-frontend-service
+                port:
+                  number: 80

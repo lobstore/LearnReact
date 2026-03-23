@@ -1,0 +1,41 @@
+# GitLab CI/CD ignore file
+# Files and directories that should be excluded from GitLab CI/CD
+
+# Dependencies
+node_modules/
+bin/
+obj/
+
+# Build outputs
+dist/
+build/
+*.dll
+*.exe
+*.pdb
+
+# IDE and editor files
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Secrets (should never be committed)
+*.pfx
+*.pem
+*.key
+appsettings.Production.json

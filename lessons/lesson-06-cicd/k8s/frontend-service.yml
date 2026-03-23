@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: learnreact-frontend-service
+  namespace: learnreact
+  labels:
+    app: learnreact-frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: learnreact-frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
