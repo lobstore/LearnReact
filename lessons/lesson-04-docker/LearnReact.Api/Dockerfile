@@ -46,7 +46,7 @@ COPY --from=publish /app/publish .
 # Настраиваем URL, по которому будет слушать Kestrel (.NET веб-сервер)
 # http://+:5000 означает "слушать на порту 5000 на всех интерфейсах"
 ENV ASPNETCORE_URLS=http://+:5000
-      # ASPNETCORE_ENVIRONMENT=Production включает продакшен-настройки
+# ASPNETCORE_ENVIRONMENT=Production включает продакшен-настройки
 ENV ASPNETCORE_ENVIRONMENT=Production
 # Открываем порт 5000
 EXPOSE 5000

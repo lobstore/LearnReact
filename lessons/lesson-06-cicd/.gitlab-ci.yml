@@ -1,0 +1,97 @@
+stages:
+  - build
+  - test
+  - deploy
+  - pages
+
+# Переменные для Docker Registry
+variables:
+  DOCKER_REGISTRY: registry.gitlab.com
+  DOCKER_IMAGE_NAME: $CI_PROJECT_PATH
+  FRONTEND_IMAGE: $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME/learnreact-frontend:$CI_COMMIT_SHA
+  API_IMAGE: $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME/learnreact-api:$CI_COMMIT_SHA
+  LATEST_FRONTEND: $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME/learnreact-frontend:latest
+  LATEST_API: $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME/learnreact-api:latest
+
+# Сборка Docker образов
+build-docker-images:
+  stage: build
+  image: docker:24.0.6
+  services:
+    - docker:24.0.6-dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$DOCKER_REGISTRY"
+  script:
+    # Сборка Frontend
+    - echo "🏗️ Building Frontend..."
+    - docker build -t "$FRONTEND_IMAGE" -t "$LATEST_FRONTEND" LearnReact.Frontend
+    # Сборка Backend
+    - echo "🏗️ Building API..."
+    - docker build -t "$API_IMAGE" -t "$LATEST_API" LearnReact.Api
+    # Отправка в Registry
+    - echo "📦 Pushing images to GitLab Registry..."
+    - docker push "$FRONTEND_IMAGE"
+    - docker push "$LATEST_FRONTEND"
+    - docker push "$API_IMAGE"
+    - docker push "$LATEST_API"
+    - echo "✅ Images pushed successfully"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "master"
+
+# Тесты - сборка фронтенда
+unit-test-job:
+  stage: test
+  image: node:alpine
+  script:
+    - echo "🧪 Running tests..."
+    - cd LearnReact.Frontend
+    - npm install
+    - npm run build
+    - echo "✅ Build successful"
+  rules:
+    - when: always
+
+# Деплой на домашний Windows сервер
+deploy-windows:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh-client curl
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | ssh-add -
+    - mkdir -p ~/.ssh
+    # Для Windows SSH принимаем любой хост
+    - echo "Host *" >> ~/.ssh/config
+    - echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+    - echo "  UserKnownHostsFile /dev/null" >> ~/.ssh/config
+  script:
+    - echo "🚀 Deploying to Windows server at $DEPLOY_HOST..."
+    
+    # Создаём директорию для проекта
+    - ssh "$DEPLOY_USER"@"$DEPLOY_HOST" "mkdir -p C:/lobstore-deploy"
+    
+    # Копируем docker-compose.yml и nginx.conf на сервер
+    - scp -r docker-compose.yml nginx-proxy.conf "$DEPLOY_USER"@"$DEPLOY_HOST":C:/lobstore-deploy/
+    
+    # Деплой через docker-compose
+    - ssh "$DEPLOY_USER"@"$DEPLOY_HOST" "
+        cd C:/lobstore-deploy &&
+        docker login -u '$CI_REGISTRY_USER' -p '$CI_REGISTRY_PASSWORD' $DOCKER_REGISTRY &&
+        docker compose pull &&
+        docker compose down || echo 'No compose to down' &&
+        docker compose up -d &&
+        echo '✅ Deployment complete!'
+      "
+    
+    # Проверка что контейнеры запущены
+    - echo "🔍 Checking containers status..."
+    - ssh "$DEPLOY_USER"@"$DEPLOY_HOST" "docker ps --filter 'name=learnreact' --filter 'name=nginx'"
+    
+  environment:
+    name: production
+    url: http://$DEPLOY_HOST
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "master"
+
