@@ -1,98 +1,168 @@
-# LearnReact - React + .NET WebAPI Demo
+# LearnReact - Учебный проект React + .NET WebAPI
 
-Простой пример приложения с фронтендом на React и бэкендом на ASP.NET Core WebAPI.
+Учебный проект, демонстрирующий поэтапное создание полноценного веб-приложения с фронтендом на React и бэкендом на ASP.NET Core WebAPI. Проект разделён на уроки, каждый из которых добавляет новые технологии и концепции.
 
 ## 📁 Структура проекта
 
 ```
 LearnReact/
-├── LearnReact.Frontend/     # Фронтенд (React + Vite)
-│   ├── src/
-│   │   ├── App.jsx          # Главный компонент с логикой
-│   │   ├── main.jsx         # Точка входа React
-│   │   └── index.css        # Стили
-│   ├── index.html
-│   ├── package.json
-│   ├── Dockerfile           # Docker для сборки React
-│   └── vite.config.js       # Настройка Vite с прокси на бэкенд
-│
-├── LearnReact.Api/          # Бэкенд (ASP.NET Core WebAPI)
-│   ├── Controllers/
-│   │   └── TodoController.cs # API-контроллер для задач
-│   ├── Models/
-│   │   └── Todo.cs           # Модель данных
-│   ├── Program.cs            # Точка входа и настройка сервера
-│   └── Dockerfile            # Docker для .NET
-│
-├── nginx/
-│   └── nginx.conf            # Конфигурация nginx (продакшен)
-│
-├── k8s/                      # Kubernetes манифесты
-│   ├── namespace.yml         # Namespace для приложения
-│   ├── configmap.yml         # Конфигурация (env variables)
-│   ├── secrets.yml           # Секреты (пароли, ключи)
-│   ├── nginx-configmap.yml   # Конфигурация nginx для K8s
-│   ├── backend-deployment.yml # Deployment для .NET API
-│   ├── frontend-deployment.yml # Deployment для React
-│   ├── backend-service.yml   # Service для backend
-│   ├── frontend-service.yml  # Service для frontend
-│   ├── backend-hpa.yml       # HorizontalPodAutoscaler
-│   ├── ingress.yml           # Ingress (внешний доступ)
-│   ├── kustomization.yml     # Kustomize конфигурация
-│   ├── deploy.sh             # Bash скрипт деплоя
-│   └── deploy.ps1            # PowerShell скрипт деплоя
-│
-├── docker-compose.yml        # Оркестрация всех сервисов
-├── .gitlab-ci.yml            # GitLab CI/CD пайплайн
-├── .gitlabignore             # GitLab CI/CD ignore file
-└── README.md
+├── README.md                          # Этот файл
+├── lessons/                           # Папка с уроками
+│   ├── lesson-01-frontend-server/     # Урок 1: Фронтенд на React + Vite
+│   │   └── LearnReact.Frontend/
+│   │       ├── src/App.jsx
+│   │       ├── src/main.jsx
+│   │       ├── index.html
+│   │       ├── package.json
+│   │       └── vite.config.js
+│   ├── lesson-02-backend-server/      # Урок 2: Бэкенд на ASP.NET Core WebAPI
+│   │   └── LearnReact.Api/
+│   │       ├── Controllers/TodoController.cs
+│   │       ├── Models/Todo.cs
+│   │       ├── Program.cs
+│   │       └── LearnReact.Api.csproj
+│   ├── lesson-03-nginx-integration/   # Урок 3: Интеграция с nginx
+│   │   ├── LearnReact.Frontend/       # Фронтенд
+│   │   ├── LearnReact.Api/            # Бэкенд
+│   │   └── nginx/                     # Конфигурация nginx
+│   ├── lesson-04-docker/              # Урок 4: Контейнеризация с Docker
+│   │   ├── LearnReact.Frontend/       # Dockerfile для фронтенда
+│   │   ├── LearnReact.Api/            # Dockerfile для бэкенда
+│   │   ├── proxy/                     # nginx proxy
+│   │   └── docker-compose.yml         # Оркестрация
+│   ├── lesson-05-kubernetes/          # Урок 5: Развёртывание в Kubernetes
+│   │   ├── LearnReact.Frontend/       # Фронтенд
+│   │   ├── LearnReact.Api/            # Бэкенд
+│   │   ├── proxy/                     # nginx proxy
+│   │   ├── k8s/                       # Kubernetes манифесты
+│   │   └── docker-compose.yml
+│   └── lesson-06-cicd/                # Урок 6: CI/CD с GitLab
+│       ├── LearnReact.Frontend/       # Фронтенд
+│       ├── LearnReact.Api/            # Бэкенд
+│       ├── proxy/                     # nginx proxy
+│       ├── k8s/                       # Kubernetes манифесты
+│       ├── docker-compose.yml
+│       └── .gitlab-ci.yml             # GitLab CI/CD пайплайн
 ```
 
-## 🚀 Запуск
+## 📚 Уроки
 
-### Вариант 1: Локальная разработка (без Docker)
+### Урок 1: Фронтенд-сервер на React + Vite
 
-**Терминал 1 - Бэкенд:**
+- Создание React-приложения с Vite
+- Базовая структура компонентов
+- Локальный запуск фронтенда на порту 5173
+
+### Урок 2: Бэкенд-сервер на ASP.NET Core WebAPI
+
+- Создание WebAPI проекта на .NET
+- Реализация CRUD операций для модели Todo
+- Локальный запуск бэкенда на порту 5000
+
+### Урок 3: Интеграция фронтенда и бэкенда через nginx
+
+- Настройка nginx как reverse proxy
+- Объединение фронтенда и бэкенда в единое приложение
+- Статическая раздача React-файлов через nginx
+
+### Урок 4: Контейнеризация с Docker
+
+- Создание Dockerfile для фронтенда и бэкенда
+- Настройка многоэтапной сборки
+- Оркестрация с docker-compose
+- Запуск всего стека одной командой
+
+### Урок 5: Развёртывание в Kubernetes
+
+- Создание Kubernetes манифестов (Deployment, Service, Ingress)
+- Настройка Namespace, ConfigMap, Secrets
+- Автомасштабирование с HorizontalPodAutoscaler
+- Развёртывание в minikube или облачном кластере
+
+### Урок 6: CI/CD с GitLab
+
+- Настройка GitLab CI/CD пайплайна
+- Автоматическая сборка и тестирование
+- Пуш Docker образов в GitLab Registry
+- Автоматический деплой в Kubernetes
+
+## 🚀 Быстрый старт
+
+### Запуск конкретного урока
+
+Каждый урок является самодостаточным. Для запуска перейдите в папку урока и следуйте инструкциям.
+
+**Пример для урока 1 (только фронтенд):**
+
 ```bash
-cd LearnReact.Api
-dotnet run
-```
-- Сервер запускается на `http://localhost:5000`
-
-**Терминал 2 - Фронтенд:**
-```bash
-cd LearnReact.Frontend
+cd lessons/lesson-01-frontend-server/LearnReact.Frontend
 npm install
 npm run dev
 ```
-- React запускается на `http://localhost:5173`
-- Vite проксирует `/api/*` → `http://localhost:5000/api/*`
 
-### Вариант 2: Продакшен (Docker + nginx)
+**Пример для урока 2 (только бэкенд):**
 
-**Одной командой:**
 ```bash
+cd lessons/lesson-02-backend-server/LearnReact.Api
+dotnet run
+```
+
+**Пример для урока 4 (Docker):**
+
+```bash
+cd lessons/lesson-04-docker
 docker-compose up --build
 ```
 
-**Или по шагам:**
+### Полный стек (Урок 4)
+
+Для запуска всего приложения с Docker и nginx:
+
 ```bash
-# Собрать и запустить все контейнеры
-docker-compose build
-docker-compose up -d
+cd lessons/lesson-04-docker
+docker-compose up --build -d
 ```
 
-- Приложение доступно по `http://localhost:80`
-- nginx раздаёт статику React и проксирует `/api/*` на .NET
+Приложение будет доступно по адресу: `http://localhost:80`
 
-**Остановить:**
-```bash
-docker-compose down
-```
+## 📝 API Endpoints
+
+Все уроки используют одинаковые API endpoints:
+
+| Метод  | URL              | Описание              |
+| ------ | ---------------- | --------------------- |
+| GET    | `/api/todo`      | Получить все задачи   |
+| GET    | `/api/todo/{id}` | Получить задачу по ID |
+| POST   | `/api/todo`      | Создать новую задачу  |
+| PUT    | `/api/todo/{id}` | Обновить задачу       |
+| DELETE | `/api/todo/{id}` | Удалить задачу        |
+
+## 🛠️ Технологии
+
+### Фронтенд
+
+- **React 18** - библиотека для построения пользовательских интерфейсов
+- **Vite** - сборщик и dev-сервер
+- **CSS** - стилизация компонентов
+
+### Бэкенд
+
+- **ASP.NET Core 8** - фреймворк для создания WebAPI
+- **C#** - язык программирования
+- **REST API** - архитектурный стиль
+
+### Инфраструктура
+
+- **Docker** - контейнеризация приложения
+- **Docker Compose** - оркестрация контейнеров
+- **nginx** - веб-сервер и reverse proxy
+- **Kubernetes** - оркестрация контейнеров в кластере
+- **GitLab CI/CD** - непрерывная интеграция и доставка
 
 ## 🔄 Архитектура
 
-### Локальная разработка
+### Локальная разработка (Уроки 1-2)
+
 ```
 ┌─────────────────┐      HTTP-запросы      ┌──────────────────┐
 │   React         │ ─────────────────────> │  .NET WebAPI     │
@@ -101,7 +171,8 @@ docker-compose down
 └─────────────────┘      JSON-ответы       └──────────────────┘
 ```
 
-### Продакшен (Docker + nginx)
+### Продакшен с nginx (Урок 3)
+
 ```
                     ┌──────────────────────────────────────┐
                     │           nginx (порт 80)            │
@@ -120,57 +191,68 @@ docker-compose down
                               └──────────────────┘
 ```
 
-## 📝 API Endpoints
+### Kubernetes (Урок 5)
 
-| Метод | URL | Описание |
-|-------|-----|----------|
-| GET | `/api/todo` | Получить все задачи |
-| GET | `/api/todo/{id}` | Получить задачу по ID |
-| POST | `/api/todo` | Создать новую задачу |
-| PUT | `/api/todo/{id}` | Обновить задачу |
-| DELETE | `/api/todo/{id}` | Удалить задачу |
+```
+                    ┌─────────────────────────────────────────┐
+                    │         Kubernetes Cluster              │
+                    │                                         │
+┌──────────┐       │   ┌─────────────────────────────────┐   │
+│  User    │       │   │    Service/proxy:80 → NodePort  │   │
+│ Browser  │ ─────►│   │         30080                   │   │
+└──────────┘       │   └─────────────┬───────────────────┘   │
+                   │                 │                       │
+                   │                 ▼                       │
+                   │   ┌─────────────────────────────────┐   │
+                   │   │    Deployment/proxy             │   │
+                   │   │    nginx:stable-alpine          │   │
+                   │   │    - / → frontend:3000          │   │
+                   │   │    - /api/* → backend:5000      │   │
+                   │   └─────────────────────────────────┘   │
+                   │           │                    │        │
+                   │           │                    │        │
+                   │           ▼                    ▼        │
+                   │   ┌──────────────┐    ┌──────────────┐  │
+                   │   │ Service/     │    │ Service/     │  │
+                   │   │ frontend:3000│    │ backend:5000 │  │
+                   │   └──────┬───────┘    └──────┬───────┘  │
+                   │          │                   │          │
+                   │          ▼                   ▼          │
+                   │   ┌──────────────┐    ┌──────────────┐  │
+                   │   │ Deployment/  │    │ Deployment/  │  │
+                   │   │ frontend (2x)│    │ backend (2x) │  │
+                   │   │ nginx:3000   │    │ .NET:5000    │  │
+                   │   │ React static │    │ WebAPI       │  │
+                   │   └──────────────┘    └──────────────┘  │
+                   │                                         │
+                   └─────────────────────────────────────────┘
+```
 
-## 🔑 Ключевые концепции
+## 🐳 Docker команды
 
-### Фронтенд (React)
-- **useState** - хранение состояния (список задач, новая задача)
-- **useEffect** - загрузка данных при монтировании компонента
-- **fetch** - HTTP-запросы к бэкенду
-
-### Бэкенд (.NET WebAPI)
-- **Controller** - класс с методами для обработки HTTP-запросов
-- **Route** - URL-адрес для доступа к методу
-- **Model** - структура данных (Todo)
-- **CORS** - разрешение запросов с другого домена/порта
-
-### nginx (Продакшен)
-- **Раздача статики** - отдаёт JS/CSS файлы React напрямую
-- **Reverse Proxy** - проксирует `/api/*` на .NET backend
-- **Кэширование** - кэширует статику в браузере клиента
-- **gzip** - сжимает ответы для уменьшения трафика
-
-## 🛠️ Docker команды
+### Для урока 4
 
 ```bash
-# Запустить всё
-docker-compose up -d
+# Перейти в папку урока
+cd lessons/lesson-04-docker
+
+# Собрать и запустить
+docker-compose up --build -d
 
 # Посмотреть логи
 docker-compose logs -f
 
-# Остановить всё
+# Остановить
 docker-compose down
-
-# Пересобрать и запустить
-docker-compose up --build -d
 
 # Удалить всё (контейнеры, сети, образы)
 docker-compose down --rmi all --volumes
 ```
 
-## ☸️ Kubernetes
+## ☸️ Kubernetes (Урок 5)
 
 ### Требования
+
 - Kubernetes кластер (minikube, kind, EKS, GKE, AKS и т.д.)
 - kubectl настроенный на подключение к кластеру
 - Docker для сборки образов
@@ -178,146 +260,58 @@ docker-compose down --rmi all --volumes
 ### Быстрый старт с minikube
 
 ```bash
+# Перейти в папку урока
+cd lessons/lesson-05-kubernetes
+
 # Запустить minikube
 minikube start
 
 # Включить ingress
 minikube addons enable ingress
 
-# Развернуть приложение (используя скрипт)
-./k8s/deploy.sh all
-
-# Или вручную применить все манифесты
-kubectl apply -f k8s/namespace.yml
-kubectl apply -f k8s/configmap.yml
-kubectl apply -f k8s/secrets.yml
-kubectl apply -f k8s/nginx-configmap.yml
-kubectl apply -f k8s/backend-deployment.yml
-kubectl apply -f k8s/frontend-deployment.yml
-kubectl apply -f k8s/backend-service.yml
-kubectl apply -f k8s/frontend-service.yml
-kubectl apply -f k8s/backend-hpa.yml
-kubectl apply -f k8s/ingress.yml
+# Развернуть приложение
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/backend-deployment.yaml
+kubectl apply -f k8s/frontend-deployment.yaml
+kubectl apply -f k8s/proxy-deployment.yaml
+kubectl apply -f k8s/backend-service.yaml
+kubectl apply -f k8s/frontend-service.yaml
+kubectl apply -f k8s/proxy-service.yaml
+kubectl apply -f k8s/ingress.yaml
 
 # Проверить статус
 kubectl get pods -n learnreact
 kubectl get services -n learnreact
 
 # Открыть приложение
-minikube service learnreact-frontend-service -n learnreact --url
-```
-
-### Использование Kustomize
-
-```bash
-# Применить все конфигурации через kustomize
-kubectl apply -k k8s/
-
-# Создать overlay для production
-mkdir -p k8s/overlays/production
+minikube service learnreact-proxy-service -n learnreact --url
 ```
 
 ### Скрипты деплоя
 
-**Bash (Linux/Mac):**
-```bash
-# Показать помощь
-./k8s/deploy.sh help
+В папке `k8s/` есть скрипты для автоматизации:
 
-# Собрать образы
-./k8s/deploy.sh build
+- `deploy.sh` - для Linux/Mac
+- `deploy.ps1` - для Windows PowerShell
 
-# Отправить в registry
-./k8s/deploy.sh push
-
-# Развернуть в кластере
-./k8s/deploy.sh deploy
-
-# Полный цикл (build + push + deploy)
-./k8s/deploy.sh all
-
-# Показать статус
-./k8s/deploy.sh status
-
-# Масштабировать
-./k8s/deploy.sh scale 5
-
-# Перезапустить
-./k8s/deploy.sh restart
-```
-
-**PowerShell (Windows):**
-```powershell
-# Разрешить выполнение скриптов
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-
-# Показать помощь
-.\k8s\deploy.ps1 help
-
-# Полный цикл
-.\k8s\deploy.ps1 all
-```
-
-### Переменные окружения
-
-| Переменная | Описание | По умолчанию |
-|------------|----------|--------------|
-| `DOCKER_REGISTRY` | Docker registry URL | `registry.gitlab.com` |
-| `CI_PROJECT_PATH` | Путь проекта в registry | `your-gitlab-username/learnreact` |
-
-### Настройка Ingress
-
-Отредактируйте `k8s/ingress.yml`:
-```yaml
-spec:
-  rules:
-    - host: your-domain.com  # Замените на ваш домен
-```
-
-Для HTTPS раскомментируйте TLS секцию и настройте cert-manager.
-
-## 🔧 GitLab CI/CD
+## 🔧 GitLab CI/CD (Урок 6)
 
 ### Настройка
 
 1. **Создайте GitLab репозиторий** и запушьте код
-
-2. **Настройте Docker Registry:**
-   - GitLab Container Registry доступен по умолчанию
-   - Образы будут пушиться в `registry.gitlab.com/your-username/learnreact`
-
-3. **Настройте переменные окружения в GitLab:**
-   ```
-   Settings → CI/CD → Variables
-   
-   DOCKER_REGISTRY      registry.gitlab.com
-   DOCKER_HOST          tcp://docker:2375
-   DOCKER_TLS_CERTDIR   ""
-   ```
-
-4. **Настройте доступ к Kubernetes кластеру:**
-   - Создайте ServiceAccount и kubeconfig
-   - Добавьте kubeconfig как GitLab CI/CD variable `KUBECONFIG`
+2. **Настройте Docker Registry** (GitLab Container Registry доступен по умолчанию)
+3. **Настройте переменные окружения в GitLab**
+4. **Настройте доступ к Kubernetes кластеру**
 
 ### Пайплайн
 
 Пайплайн состоит из следующих стадий:
 
-| Стадия | Описание |
-|--------|----------|
-| `lint` | Проверка кода (backend/frontend) |
-| `test` | Запуск тестов и сборка |
-| `build` | Сборка Docker образов |
-| `push` | Пуш образов в GitLab Registry |
-| `deploy` | Деплой в Kubernetes |
-
-### Ветки и окружения
-
-| Ветка | Действие | Окружение |
-|-------|----------|-----------|
-| `develop` | Авто-деплой | Staging |
-| `main` | Ручной деплой | Production |
-| Tag | Ручной деплой | Production |
+- `lint` - проверка кода (backend/frontend)
+- `test` - запуск тестов и сборка
+- `build` - сборка Docker образов
+- `push` - пуш образов в GitLab Registry
+- `deploy` - деплой в Kubernetes
 
 ### Запуск пайплайна
 
@@ -327,17 +321,7 @@ npm install -g gitlab-ci-local
 gitlab-ci-local
 ```
 
-### Манифесты для деплоя
-
-После успешного билда и пуша, пайплайн автоматически:
-1. Обновляет image tags в Kubernetes манифестах
-2. Применяет все манифесты к кластеру
-3. Ждёт завершения rollout
-4. Показывает статус деплоя
-
-## 📊 Мониторинг и логирование
-
-### Проверка статуса
+## 📊 Мониторинг и логирование (Kubernetes)
 
 ```bash
 # Получить все поды
@@ -349,33 +333,43 @@ kubectl get services -n learnreact
 # Получить ingress
 kubectl get ingress -n learnreact
 
-# Получить HPA
-kubectl get hpa -n learnreact
-
-# Описать под (для отладки)
-kubectl describe pod <pod-name> -n learnreact
-
 # Посмотреть логи
 kubectl logs -f deployment/learnreact-backend -n learnreact
 kubectl logs -f deployment/learnreact-frontend -n learnreact
-```
 
-### Масштабирование
-
-```bash
-# Автоматическое (через HPA)
-# Backend автоматически масштабируется от 2 до 10 реплик
-
-# Ручное масштабирование
+# Масштабирование
 kubectl scale deployment/learnreact-backend -n learnreact --replicas=5
-```
 
-### Откат изменений
-
-```bash
-# Откатить deployment
+# Откат изменений
 kubectl rollout undo deployment/learnreact-backend -n learnreact
-
-# Проверить историю
-kubectl rollout history deployment/learnreact-backend -n learnreact
 ```
+
+## 🔑 Ключевые концепции
+
+### Фронтенд (React)
+
+- **useState** - хранение состояния (список задач, новая задача)
+- **useEffect** - загрузка данных при монтировании компонента
+- **fetch** - HTTP-запросы к бэкенду
+
+### Бэкенд (.NET WebAPI)
+
+- **Controller** - класс с методами для обработки HTTP-запросов
+- **Route** - URL-адрес для доступа к методу
+- **Model** - структура данных (Todo)
+- **CORS** - разрешение запросов с другого домена/порта
+
+### nginx
+
+- **Раздача статики** - отдаёт JS/CSS файлы React напрямую
+- **Reverse Proxy** - проксирует `/api/*` на .NET backend
+- **Кэширование** - кэширует статику в браузере клиента
+- **gzip** - сжимает ответы для уменьшения трафика
+
+## 📄 Лицензия
+
+Этот проект предназначен для образовательных целей.
+
+## 🤝 Вклад
+
+Если вы хотите внести вклад в проект, пожалуйста, создайте issue или pull request.
